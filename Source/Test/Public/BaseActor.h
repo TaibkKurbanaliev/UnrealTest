@@ -25,6 +25,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
+	void SetMoveType(EMovementType type) { MoveType = type; };
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Amplitude = 50.0f;
@@ -34,6 +36,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	EMovementType MoveType = EMovementType::Static;
+
+	UPROPERTY(EditAnywhere, Category = "Design")
+	float TimerRate = 3.0f;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,5 +47,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
+	FTimerHandle TimerHandle;
 	FVector InitialLocation;
+
+	void OnTimerFired();
 };

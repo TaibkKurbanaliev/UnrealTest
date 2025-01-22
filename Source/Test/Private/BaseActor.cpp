@@ -2,6 +2,8 @@
 
 
 #include "BaseActor.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseGeometry, All, All)
 
@@ -22,6 +24,8 @@ void ABaseActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetWorldTimerManager().SetTimer(TimerHandle,this, &ABaseActor::OnTimerFired, TimerRate, true);
+
 	FTransform Transform = GetActorTransform();
 	FVector Location = Transform.GetLocation();
 	FRotator Rotator = Transform.Rotator();
@@ -31,6 +35,8 @@ void ABaseActor::BeginPlay()
 	UE_LOG(LogTemp, Error, TEXT("Actor name %s"), *Rotator.ToString());
 
 	InitialLocation = GetActorLocation();
+	
+
 }
 
 // Called every frame
@@ -50,6 +56,17 @@ void ABaseActor::Tick(float DeltaTime)
 		break;
 	default:
 		break;
+	}
+}
+
+void ABaseActor::OnTimerFired()
+{
+	const FLinearColor NewColor = FLinearColor::MakeRandomColor();
+	UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
+
+	if (DynMaterial)
+	{
+		DynMaterial->SetVectorParameterValue("Color", NewColor);
 	}
 }
 
